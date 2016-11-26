@@ -1,0 +1,153 @@
+Coursera Capstone Project - A natural language processing model (NLP) with 'ngram' continuation probabilities via Kneser-Ney smoothing.
+========================================================
+Mark A. Jack; November 24, 2016.
+
+```{r, include=FALSE, cache=FALSE}
+library(R.utils)
+library(stringr)
+library(knitr)
+library(devtools)
+library(quanteda)
+library(slam)
+#
+library(tm)
+library(NLP)
+library(openNLP)
+library(qdap)
+library(RWeka)
+library(ngram)
+library(SnowballC)
+#
+library(ggplot2)
+library(plyr)
+library(dplyr)
+```
+
+Text corpus, package 'quanteda' and ngrams
+========================================================
+- Three data files from a 'blogs', 'twitter' and 'news' feed are combined to a text corpus using the 'tm' package.
+
+- Via libary 'quanteda', the corpus is tokenized and text features such as punctuation, numbers, white space, lowercase words etc. are removed.
+
+- 'ngrams' - unigrams, bigrams, trigrams and quadgrams - are generated via a document-frequency matrix (dfm). 
+
+- A 'dfm' allows for quick and easy analysis of the most frequently occurying ngrams.
+
+```{r, include=FALSE, cache=FALSE}
+unigrams.df <- readRDS(file="unigram_model.Rds")
+bigrams.df <- readRDS(file="bigram_model.Rds")
+trigrams.df <- readRDS(file="trigram_model.Rds")
+quadgrams.df <- readRDS(file="quadgram_model.Rds")
+#
+unigrams.dfm <- readRDS(file="unigrams_dfm.Rds")
+bigrams.dfm <- readRDS(file="bigrams_dfm.Rds")
+trigrams.dfm <- readRDS(file="trigrams_dfm.Rds")
+quadgrams.dfm <- readRDS(file="quadgrams_dfm.Rds")
+#
+unigrams_most <- data.frame(unigrams.df[, 1:2])
+unigrams_most[, 1] <- as.character(unigrams.df$keyName)
+unigrams_most[, 2] <- as.numeric(unigrams.df$value)
+colnames(unigrams_most) <- c("Word","Frequency")
+unigrams_most <- arrange(unigrams_most, desc(Frequency))
+unigrams_most0 <- unigrams_most[1:25,]
+row.names(unigrams_most0) <- NULL
+#
+bigrams_most <- data.frame(bigrams.df[, 1:2])
+bigrams_most[, 1] <- as.character(bigrams.df$keyName)
+bigrams_most[, 2] <- as.numeric(bigrams.df$value)
+colnames(bigrams_most) <- c("Word","Frequency")
+bigrams_most <- arrange(bigrams_most, desc(Frequency))
+bigrams_most0 <- bigrams_most[1:25,]
+row.names(bigrams_most0) <- NULL
+#
+trigrams_most <- data.frame(trigrams.df[, 1:2])
+trigrams_most[, 1] <- as.character(trigrams.df$keyName)
+trigrams_most[, 2] <- as.numeric(trigrams.df$value)
+colnames(trigrams_most) <- c("Word","Frequency")
+trigrams_most <- arrange(trigrams_most, desc(Frequency))
+trigrams_most0 <- trigrams_most[1:25,]
+row.names(trigrams_most0) <- NULL
+#
+quadgrams_most <- data.frame(quadgrams.df[, 1:2])
+quadgrams_most[, 1] <- as.character(quadgrams.df$keyName)
+quadgrams_most[, 2] <- as.numeric(quadgrams.df$value)
+colnames(quadgrams_most) <- c("Word","Frequency")
+quadgrams_most <- arrange(quadgrams_most, desc(Frequency))
+quadgrams_most0 <- quadgrams_most[1:25,]
+row.names(quadgrams_most0) <- NULL
+```
+
+Most frequently occurring ngrams
+========================================================
+We show the number of occurances of each of the most common unigrams and bigrams in horizontal bar plots. 
+```{r, echo=FALSE, out.height="450px", out.width="450px"}
+par(mar=c(4,6,2,2))
+par(mfrow = c(1,1))
+barplot(topfeatures(unigrams.dfm, 25), horiz=TRUE, las=1, col="Blue")
+#dev.copy(png, file = "./capstone-project/barplot_uni.png")
+#dev.off()
+#
+par(mar=c(4,6,2,2))
+par(mfrow = c(1,1))
+barplot(topfeatures(bigrams.dfm, 25), horiz=TRUE, las=1, col="Green")
+#dev.copy(png, file = "./capstone-project/barplot_bi.png")
+#dev.off()
+#
+#par(mar=c(4,8,2,2))
+#par(mfrow = c(1,1))
+#barplot(topfeatures(trigrams.dfm, 25), horiz=TRUE, las=1, col="Red")
+#dev.copy(png, file = "./capstone-project/barplot_tri.png")
+#dev.off()
+#
+#par(mar=c(4,8,2,2))
+#par(mfrow = c(1,1))
+#barplot(topfeatures(quadgrams.dfm, 25), horiz=TRUE, las=1, col="Purple")
+#dev.copy(png, file = "./capstone-project/barplot_quad.png")
+#dev.off()
+```
+#### Figure 1. Unigram and bigram occurences in descending order.
+
+Trigram and quadgram occurrences
+========================================================
+For unigrams, bigrams, and trigrams, 1% of the selected text corpus was used. The sample for the quadgrams was restricted to 0.1% of the corpus due to memory limitations.
+```{r, echo=FALSE, out.height="450px", out.width="450px"}
+par(mfrow = c(2,1))
+#par(mar=c(4,4,2,2))
+#g1 <- ggplot(data = unigrams_most0, aes(x=Word,y=Frequency)) + #geom_bar(stat="Identity", fill="Blue") 
+#g2 <- g1 + geom_text(aes(label=Frequency), vjust=-0.20) + labs(title = "Frequency #of unigrams") 
+#g3 <- g2 + labs(x = "Unigrams", y = "Frequency")
+#g4 <- g3 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+#g4
+#
+#par(mar=c(4,4,2,2))
+#g1 <- ggplot(data = bigrams_most0, aes(x=Word,y=Frequency)) + #geom_bar(stat="Identity", fill="Green") 
+#g2 <- g1 + geom_text(aes(label=Frequency), vjust=-0.20) + labs(title = #"Frequency of bigrams") 
+#g3 <- g2 + labs(x = "Bigrams", y = "Frequency")
+#g4 <- g3 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+#g4
+#
+par(mar=c(4,4,2,2))
+g1 <- ggplot(data = trigrams_most0, aes(x=Word,y=Frequency)) + geom_bar(stat="Identity", fill="Red") 
+g2 <- g1 + geom_text(aes(label=Frequency), vjust=-0.20) + labs(title = "Frequency of trigrams") 
+g3 <- g2 + labs(x = "Trigrams", y = "Frequency")
+g4 <- g3 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+g4
+#
+par(mar=c(4,4,2,2))
+g1 <- ggplot(data = quadgrams_most0, aes(x=Word,y=Frequency)) + geom_bar(stat="Identity", fill="Purple") 
+g2 <- g1 + geom_text(aes(label=Frequency), vjust=-0.20) + labs(title = "Frequency #of quadgrams") 
+g3 <- g2 + labs(x = "Quadgrams", y = "Frequency")
+g4 <- g3 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+g4
+```
+#### Figure 2. Trigram and quadgram occurrences, alphabetically sorted.
+
+Continuation probabilities, Kneser-Ney smoothing and shiny app
+========================================================
+<div align="center">
+<img src="shiny_app.png" width=450 height=450>
+</div>
+
+- Continuation probability of each unigram estimated from bigram occurrences that continue a unigram etc.
+
+- Probabilities are corrected via Kneser-Ney smoothing by 'estimating' the likelihood of 'ngrams' missing in the corpus. 
