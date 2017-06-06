@@ -29,7 +29,7 @@ library(dplyr)
 #
 #-------------------------------------------------------------------------
 # Set your work directory, garbage collection and clearing memory from prebious runs:
-#setwd("~/")
+setwd("~/")
 #
 # Garbage collection:
 gc()
@@ -38,12 +38,12 @@ rm(list=ls(all=TRUE))
 gc()
 
 # Create data files for further processing:
-blogs <- readLines(file("./capstone-project/en_US.blogs.txt",encoding = "UTF-8"),encoding = "UTF-8", skipNul=TRUE)
-news <- readLines(file("./capstone-project/en_US.news.txt",encoding = "UTF-8"),encoding = "UTF-8", skipNul=TRUE)
-twitter <- readLines(file("./capstone-project/en_US.twitter.txt",encoding = "UTF-8"),encoding = "UTF-8", skipNul=TRUE)
-close(file("./capstone-project/en_US.twitter.txt")) 
-close(file("./capstone-project/en_US.news.txt")) 
-close(file("./capstone-project/en_US.blogs.txt")) 
+blogs <- readLines(file("/Users/markjack/capstone-project/en_US.blogs.txt",encoding = "UTF-8"),encoding = "UTF-8", skipNul=TRUE)
+news <- readLines(file("/Users/markjack/capstone-project/en_US.news.txt",encoding = "UTF-8"),encoding = "UTF-8", skipNul=TRUE)
+twitter <- readLines(file("/Users/markjack/capstone-project/en_US.twitter.txt",encoding = "UTF-8"),encoding = "UTF-8", skipNul=TRUE)
+close(file("/Users/markjack/capstone-project/en_US.twitter.txt")) 
+close(file("/Users/markjack/capstone-project/en_US.news.txt")) 
+close(file("/Users/markjack/capstone-project/en_US.blogs.txt")) 
 #
 # Number of lines in each data file:
 nl_blogs <- length(blogs)
@@ -442,41 +442,41 @@ head(quadgrams_most0)
 #trigrams.df <- readRDS(file="/Users/markjack/Desktop/trigram_model.Rds")
 #quadgrams.df <- readRDS(file="/Users/markjack/Desktop/quadgram_model.Rds")
 #
-#unigrams_most <- data.frame(unigrams.df[, 1:2])
-#unigrams_most[, 1] <- as.character(unigrams.df$keyName)
-#unigrams_most[, 2] <- as.numeric(unigrams.df$value)
-#colnames(unigrams_most) <- c("Word","Frequency")
-#unigrams_most <- arrange(unigrams_most, desc(Frequency))
-#unigrams_most0 <- unigrams_most[1:25,]
-#row.names(unigrams_most0) <- NULL
-#head(unigrams_most0)
+unigrams_most <- data.frame(unigrams.df[, 1:2])
+unigrams_most[, 1] <- as.character(unigrams.df$keyName)
+unigrams_most[, 2] <- as.numeric(unigrams.df$value)
+colnames(unigrams_most) <- c("Word","Frequency")
+unigrams_most <- arrange(unigrams_most, desc(Frequency))
+unigrams_most0 <- unigrams_most[1:25,]
+row.names(unigrams_most0) <- NULL
+head(unigrams_most0)
 #
-#bigrams_most <- data.frame(bigrams.df[, 1:2])
-#bigrams_most[, 1] <- as.character(bigrams.df$keyName)
-#bigrams_most[, 2] <- as.numeric(bigrams.df$value)
-#colnames(bigrams_most) <- c("Word","Frequency")
-#bigrams_most <- arrange(bigrams_most, desc(Frequency))
-#bigrams_most0 <- bigrams_most[1:25,]
-#row.names(bigrams_most0) <- NULL
-#head(bigrams_most0)
+bigrams_most <- data.frame(bigrams.df[, 1:2])
+bigrams_most[, 1] <- as.character(bigrams.df$keyName)
+bigrams_most[, 2] <- as.numeric(bigrams.df$value)
+colnames(bigrams_most) <- c("Word","Frequency")
+bigrams_most <- arrange(bigrams_most, desc(Frequency))
+bigrams_most0 <- bigrams_most[1:25,]
+row.names(bigrams_most0) <- NULL
+head(bigrams_most0)
 #
-#trigrams_most <- data.frame(trigrams.df[, 1:2])
-#trigrams_most[, 1] <- as.character(trigrams.df$keyName)
-#trigrams_most[, 2] <- as.numeric(trigrams.df$value)
-#colnames(trigrams_most) <- c("Word","Frequency")
-#trigrams_most <- arrange(trigrams_most, desc(Frequency))
-#trigrams_most0 <- trigrams_most[1:25,]
-#row.names(trigrams_most0) <- NULL
-#head(trigrams_most0)
+trigrams_most <- data.frame(trigrams.df[, 1:2])
+trigrams_most[, 1] <- as.character(trigrams.df$keyName)
+trigrams_most[, 2] <- as.numeric(trigrams.df$value)
+colnames(trigrams_most) <- c("Word","Frequency")
+trigrams_most <- arrange(trigrams_most, desc(Frequency))
+trigrams_most0 <- trigrams_most[1:25,]
+row.names(trigrams_most0) <- NULL
+head(trigrams_most0)
 #
-#quadgrams_most <- data.frame(quadgrams.df[, 1:2])
-#quadgrams_most[, 1] <- as.character(quadgrams.df$keyName)
-#quadgrams_most[, 2] <- as.numeric(quadgrams.df$value)
-#colnames(quadgrams_most) <- c("Word","Frequency")
-#quadgrams_most <- arrange(quadgrams_most, desc(Frequency))
-#quadgrams_most0 <- quadgrams_most[1:25,]
-#row.names(quadgrams_most0) <- NULL
-#head(quadgrams_most0)
+quadgrams_most <- data.frame(quadgrams.df[, 1:2])
+quadgrams_most[, 1] <- as.character(quadgrams.df$keyName)
+quadgrams_most[, 2] <- as.numeric(quadgrams.df$value)
+colnames(quadgrams_most) <- c("Word","Frequency")
+quadgrams_most <- arrange(quadgrams_most, desc(Frequency))
+quadgrams_most0 <- quadgrams_most[1:25,]
+row.names(quadgrams_most0) <- NULL
+head(quadgrams_most0)
 #
 #-------------------------------------------------------------------------
 # Plots of histograms of unigram, bigram, trigram, quadgram occurrances:
